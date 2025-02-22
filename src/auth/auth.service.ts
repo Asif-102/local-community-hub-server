@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { hash, verify } from "argon2";
@@ -17,31 +17,23 @@ export class AuthService {
   async register({ email, password }: RegisterDto, res: Response) {
     const hashedPassword = await hash(password);
 
-    const createdUser = await this.usersService.createOne({
-      email,
-      hashedPassword,
-    });
+    const createdUser = await this.usersService.createOne({ email, hashedPassword });
 
     return await this.generateTokens(createdUser.id, res);
   }
 
-  async validateUser(email: string, password: string) {
+  async googleAuth(email: string, res: Response) {
     const userByEmail = await this.usersService.getOne({ email });
 
-    if (!userByEmail) {
-      return null;
+    if (userByEmail) {
+      return await this.generateTokens(userByEmail.id, res);
     }
 
-    const isValidPw = await verify(userByEmail.hashedPassword, password);
+    const createdUser = await this.usersService.createOne({ email });
 
-    if (!isValidPw) {
-      return null;
-    }
-
-    return userByEmail;
+    return await this.generateTokens(createdUser.id, res);
   }
 
-  // Private methods
   async generateTokens(userId: number, res: Response) {
     const accessToken = await this.jwtService.signAsync(
       { userId },
@@ -65,5 +57,25 @@ export class AuthService {
     });
 
     return accessToken;
+  }
+
+  async validateUser(email: string, password: string) {
+    const userByEmail = await this.usersService.getOne({ email });
+
+    if (!userByEmail) {
+      return null;
+    }
+
+    if (!userByEmail.hashedPassword) {
+      throw new BadRequestException("Probably you already have an account via google");
+    }
+
+    const isValidPw = await verify(userByEmail.hashedPassword, password);
+
+    if (!isValidPw) {
+      return null;
+    }
+
+    return userByEmail;
   }
 }
