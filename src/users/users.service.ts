@@ -1,6 +1,7 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { BadRequestException, ConflictException, Injectable } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { GetUserDto } from "./dtos/get-user.dto";
 
 @Injectable()
 export class UsersService {
@@ -21,5 +22,17 @@ export class UsersService {
     });
 
     return createUser;
+  }
+
+  async getOne({ id, email }: GetUserDto) {
+    if (!id && !email) {
+      throw new BadRequestException();
+    }
+
+    const user = await this.prismaService.user.findFirst({
+      where: { id, email },
+    });
+
+    return user;
   }
 }
