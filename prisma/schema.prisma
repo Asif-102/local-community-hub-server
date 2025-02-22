@@ -26,6 +26,18 @@ model Task {
   @@map("tasks")
 }
 
+model User {
+  id Int @id @default(autoincrement())
+
+  email          String @unique
+  hashedPassword String @map("hashed_password")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
 enum TaskStatusEnum {
   new
   doing
