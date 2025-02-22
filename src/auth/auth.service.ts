@@ -32,7 +32,7 @@ export class AuthService {
       return null;
     }
 
-    const isValidPw = verify(userByEmail.hashedPassword, password);
+    const isValidPw = await verify(userByEmail.hashedPassword, password);
 
     if (!isValidPw) {
       return null;
