@@ -16,7 +16,18 @@ export class AuthController {
 
   @UseGuards(AuthGuard("local"))
   @Post("login")
-  async login(@CurrentUser("id", ParseIntPipe) userId: number, @Res({ passthrough: true }) res: Response) {
-    return await this.authService.generateTokens(userId, res);
+  login(@CurrentUser("id", ParseIntPipe) userId: number, @Res({ passthrough: true }) res: Response) {
+    return this.authService.generateTokens(userId, res);
+  }
+
+  @UseGuards(AuthGuard("jwt-refresh"))
+  @Post("refresh")
+  refresh(@CurrentUser("id", ParseIntPipe) userId: number, @Res({ passthrough: true }) res: Response) {
+    return this.authService.generateTokens(userId, res);
+  }
+
+  @Post("logout")
+  async logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie("refreshToken", "");
   }
 }
