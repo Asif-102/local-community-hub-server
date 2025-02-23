@@ -29,13 +29,21 @@ model Task {
   @@map("tasks")
 }
 
-model User {
-  id Int @id @default(autoincrement())
+enum TaskStatusEnum {
+  new
+  doing
+  completed
+  closed
+}
 
+model User {
+  id             Int     @id @default(autoincrement())
   email          String  @unique
   hashedPassword String? @map("hashed_password")
 
   tasks Task[]
+
+  role RoleEnum @default(USER)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -43,9 +51,21 @@ model User {
   @@map("users")
 }
 
-enum TaskStatusEnum {
-  new
-  doing
-  completed
-  closed
+enum RoleEnum {
+  SUPER_ADMIN
+  ADMIN
+  USER
+}
+
+enum ResourceEnum {
+  settings
+  products
+  users
+}
+
+enum ActionEnum {
+  read
+  create
+  update
+  delete
 }
