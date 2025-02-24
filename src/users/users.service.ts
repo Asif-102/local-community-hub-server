@@ -14,10 +14,14 @@ export class UsersService {
       throw new ConflictException("User with this email is already existing");
     }
 
+    const userCount = await this.prismaService.user.count();
+    const role = userCount === 0 ? "SUPER_ADMIN" : "USER";
+
     const createUser = await this.prismaService.user.create({
       data: {
         email,
         hashedPassword,
+        role,
       },
     });
 

@@ -41,7 +41,8 @@ model User {
   email          String  @unique
   hashedPassword String? @map("hashed_password")
 
-  tasks Task[]
+  tasks      Task[]
+  categories Category[]
 
   role RoleEnum @default(USER)
 
@@ -57,15 +58,14 @@ enum RoleEnum {
   USER
 }
 
-enum ResourceEnum {
-  settings
-  products
-  users
-}
+model Category {
+  id Int @id @default(autoincrement())
 
-enum ActionEnum {
-  read
-  create
-  update
-  delete
+  title String @unique
+  slug  String @unique
+
+  publish Boolean @default(false)
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
