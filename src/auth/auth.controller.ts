@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, ParseIntPipe, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Response } from "express";
 import { Profile } from "passport-google-oauth20";
@@ -12,23 +12,27 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("register")
+  @HttpCode(HttpStatus.CREATED)
   register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.register(dto, res);
   }
 
   @UseGuards(AuthGuard("local"))
   @Post("login")
+  @HttpCode(HttpStatus.OK)
   login(@CurrentUser("id", ParseIntPipe) userId: number, @Res({ passthrough: true }) res: Response) {
     return this.authService.generateTokens(userId, res);
   }
 
   @UseGuards(AuthGuard("jwt-refresh"))
   @Post("refresh")
+  @HttpCode(HttpStatus.OK)
   refresh(@CurrentUser("id", ParseIntPipe) userId: number, @Res({ passthrough: true }) res: Response) {
     return this.authService.generateTokens(userId, res);
   }
 
   @Post("logout")
+  @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
     res.cookie("refreshToken", "");
   }
