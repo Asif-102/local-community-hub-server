@@ -7,7 +7,7 @@ import { GetUserDto } from "./dtos/get-user.dto";
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async createOne({ email, hashedPassword }: CreateUserDto) {
+  async createOne({ email, firstName, lastName, avatar, hashedPassword }: CreateUserDto) {
     const userByEmail = await this.prismaService.user.findUnique({ where: { email } });
 
     if (userByEmail) {
@@ -20,6 +20,9 @@ export class UsersService {
     const createUser = await this.prismaService.user.create({
       data: {
         email,
+        firstName,
+        lastName,
+        avatar,
         hashedPassword,
         role,
       },

@@ -41,7 +41,14 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @Get("google/callback")
   googleCallback(@Req() req: Request & { user: Profile }, @Res({ passthrough: true }) res: Response) {
-    console.log({ user: req.user._json });
-    return this.authService.googleAuth(req.user._json.email, res);
+    return this.authService.googleAuth(
+      {
+        email: req.user._json.email,
+        firstName: req.user._json.given_name,
+        lastName: req.user._json.family_name,
+        avatar: req.user._json.picture,
+      },
+      res,
+    );
   }
 }

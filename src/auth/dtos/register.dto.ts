@@ -6,6 +6,14 @@ export class RegisterDto {
   @IsEmail()
   email: string;
 
+  @IsString()
+  firstName: string;
+
+  @IsString()
+  lastName: string;
+
+  avatar?: string;
+
   @IsDefined()
   @IsNotEmpty()
   @IsString()

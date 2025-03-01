@@ -4,6 +4,7 @@ import { JwtService } from "@nestjs/jwt";
 import { hash, verify } from "argon2";
 import { Response } from "express";
 import { UsersService } from "src/users/users.service";
+import { GoogleDto } from "./dtos/google.dto";
 import { RegisterDto } from "./dtos/register.dto";
 
 @Injectable()
@@ -14,22 +15,22 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register({ email, password }: RegisterDto, res: Response) {
+  async register({ email, firstName, lastName, password }: RegisterDto, res: Response) {
     const hashedPassword = await hash(password);
 
-    const createdUser = await this.usersService.createOne({ email, hashedPassword });
+    const createdUser = await this.usersService.createOne({ email, firstName, lastName, hashedPassword });
 
     return await this.generateTokens(createdUser.id, res);
   }
 
-  async googleAuth(email: string, res: Response) {
-    const userByEmail = await this.usersService.getOne({ email });
+  async googleAuth(dto: GoogleDto, res: Response) {
+    const userByEmail = await this.usersService.getOne({ email: dto.email });
 
     if (userByEmail) {
       return await this.generateTokens(userByEmail.id, res);
     }
 
-    const createdUser = await this.usersService.createOne({ email });
+    const createdUser = await this.usersService.createOne(dto);
 
     return await this.generateTokens(createdUser.id, res);
   }

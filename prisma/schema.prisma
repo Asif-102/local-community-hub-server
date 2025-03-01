@@ -39,6 +39,9 @@ enum TaskStatusEnum {
 model User {
   id             Int     @id @default(autoincrement())
   email          String  @unique
+  firstName      String
+  lastName       String
+  avatar         String?
   hashedPassword String? @map("hashed_password")
 
   tasks      Task[]
