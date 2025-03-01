@@ -11,15 +11,15 @@ import { CategoryService } from "./category.service";
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Roles(Role.USER)
-  @Post("user")
-  createByUser() {
+  @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Post()
+  create() {
     return true;
   }
 
-  @Roles(Role.ADMIN)
-  @Post("admin")
-  createByAdmin() {
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Post()
+  update() {
     return true;
   }
 }
