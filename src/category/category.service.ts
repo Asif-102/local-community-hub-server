@@ -45,6 +45,16 @@ export class CategoryService {
     return changedStatus;
   }
 
+  async delete(id: number) {
+    await this.getOneOrThrow(id);
+
+    const deletedCategory = await this.prisma.category.delete({
+      where: { id },
+    });
+
+    return deletedCategory;
+  }
+
   private async getOneOrThrow(id: number): Promise<Category> {
     const category = await this.prisma.category.findUnique({
       where: { id },

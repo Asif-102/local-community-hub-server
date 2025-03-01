@@ -1,4 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from "@nestjs/common";
 import { Roles } from "src/auth/decorators/roles.decorator";
 import { Role } from "src/auth/enums/role.enum";
 import { JwtAccessGuard } from "src/auth/guards/jwt-access.guard";
@@ -32,5 +43,12 @@ export class CategoryController {
   @HttpCode(HttpStatus.OK)
   changeStatus(@Param("id", ParseIntPipe) id: number) {
     return this.categoryService.changeStatus(id);
+  }
+
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
+  @Delete(":id")
+  @HttpCode(HttpStatus.OK)
+  delete(@Param("id", ParseIntPipe) id: number) {
+    return this.categoryService.delete(id);
   }
 }
