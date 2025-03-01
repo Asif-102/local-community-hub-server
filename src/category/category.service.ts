@@ -52,7 +52,11 @@ export class CategoryService {
   }
 
   async delete(id: number) {
-    await this.getOneOrThrow(id);
+    const category = await this.getOneOrThrow(id);
+
+    if (category.publish) {
+      throw new ConflictException("Cannot delete a published category. Please unpublish it first.");
+    }
 
     const deletedCategory = await this.prisma.category.delete({
       where: { id },
