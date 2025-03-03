@@ -49,7 +49,7 @@ export class AuthController {
       {
         email: req.user._json.email,
         firstName: req.user._json.given_name,
-        lastName: req.user._json.family_name,
+        lastName: req.user._json.family_name || "",
         avatar: req.user._json.picture,
       },
       res,
