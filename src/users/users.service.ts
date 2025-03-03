@@ -21,7 +21,7 @@ export class UsersService {
       data: {
         email,
         firstName,
-        lastName,
+        lastName: lastName || "",
         avatar,
         hashedPassword,
         role,
