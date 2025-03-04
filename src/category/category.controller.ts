@@ -24,7 +24,7 @@ import { CreateCategoryDto } from "./dtos/create-category.dto";
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateCategoryDto, @CurrentUser("id", ParseIntPipe) userId: number) {
