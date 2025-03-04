@@ -46,6 +46,8 @@ model User {
 
   tasks      Task[]
   categories Category[]
+  posts      Post[]
+  hashtags   HashTag[]
 
   role RoleEnum @default(USER)
 
@@ -71,4 +73,38 @@ model Category {
 
   authorId Int
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  posts Post[]
+}
+
+model HashTag {
+  id Int @id @default(autoincrement())
+
+  title String @unique
+  slug  String @unique
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  posts Post[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+
+  content String
+
+  photo String?
+
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  hashTagId Int?
+  hashTag   HashTag? @relation(fields: [hashTagId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }

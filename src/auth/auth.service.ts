@@ -36,8 +36,10 @@ export class AuthService {
   }
 
   async generateTokens(userId: number, res: Response) {
+    const user = await this.usersService.getUserById(userId);
+
     const accessToken = await this.jwtService.signAsync(
-      { userId },
+      { userId, role: user.role },
       {
         secret: this.configService.getOrThrow("JWT_ACCESS_SECRET"),
         expiresIn: this.configService.getOrThrow("JWT_ACCESS_EXPIRES"),
@@ -45,7 +47,7 @@ export class AuthService {
     );
 
     const refreshToken = await this.jwtService.signAsync(
-      { userId },
+      { userId, role: user.role },
       {
         secret: this.configService.getOrThrow("JWT_REFRESH_SECRET"),
         expiresIn: this.configService.getOrThrow("JWT_REFRESH_EXPIRES"),
