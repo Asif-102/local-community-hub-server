@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -23,6 +24,13 @@ import { CreateCategoryDto } from "./dtos/create-category.dto";
 @Controller("category")
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
+
+  @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  getAll() {
+    return this.categoryService.getAll();
+  }
 
   @Roles(Role.ADMIN, Role.SUPER_ADMIN)
   @Post()
