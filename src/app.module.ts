@@ -14,7 +14,7 @@ import { UsersModule } from "./users/users.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MulterModule.register({ dest: "./uploads" }),
+    MulterModule.register(),
     TasksModule,
     PrismaModule,
     UsersModule,

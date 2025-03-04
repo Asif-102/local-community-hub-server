@@ -10,7 +10,12 @@ export class ImageController {
   @UseInterceptors(FileInterceptor("image"))
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     try {
-      const result = await this.cloudinaryService.uploadImage(file.path);
+      if (!file) {
+        throw new Error("File not provided");
+      }
+
+      // Pass buffer and original filename to Cloudinary
+      const result = await this.cloudinaryService.uploadImage(file.buffer, file.originalname);
       return result;
     } catch (error) {
       console.error("Error uploading image: ", error);
