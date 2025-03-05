@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UploadedFile,
   UseGuards,
@@ -36,6 +37,19 @@ export class PostsController {
     @CurrentUser("id", ParseIntPipe) authorId: number,
   ) {
     return this.postsService.create(dto, file, authorId);
+  }
+
+  @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Patch(":postId")
+  @UseInterceptors(FileInterceptor("image"))
+  @HttpCode(HttpStatus.OK)
+  update(
+    @Param("postId", ParseIntPipe) postId: number,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() dto: CreatePostDto,
+    @CurrentUser("id", ParseIntPipe) authorId: number,
+  ) {
+    return this.postsService.update(postId, dto, file, authorId);
   }
 
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)

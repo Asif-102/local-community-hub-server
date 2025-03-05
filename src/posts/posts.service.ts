@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Post } from "@prisma/client";
 import { PrismaService } from "prisma/prisma.service";
 import { CategoryService } from "src/category/category.service";
@@ -22,12 +22,17 @@ export class PostsService {
 
     const category = await this.categoryService.getOneOrThrow(categoryId);
 
-    const img = await this.cloudinaryService.uploadImage(file.buffer, file.originalname);
+    let imageUrl = null;
+
+    if (file) {
+      const img = await this.cloudinaryService.uploadImage(file.buffer, file.originalname);
+      imageUrl = img.secure_url;
+    }
 
     const createdPost = await this.prisma.post.create({
       data: {
         content,
-        photo: img.secure_url,
+        photo: imageUrl,
         authorId,
         categoryId: category.id,
         hashTagId: hashtagId,
@@ -37,27 +42,55 @@ export class PostsService {
     return createdPost;
   }
 
-  async delete(postId: number, authorId: number) {
-    await this.getOneOrThrow(postId);
+  async update(
+    postId: number,
+    { content, categoryId, hashTag }: CreatePostDto,
+    file: Express.Multer.File,
+    authorId: number,
+  ) {
+    const existingPost = await this.getOneOrThrow(postId, authorId);
 
-    const post = await this.prisma.post.findUnique({
-      where: { id: postId, authorId },
+    let hashtagId;
+    if (hashTag) {
+      hashtagId = await this.hashtagsService.findOrCreate(hashTag, authorId);
+    }
+
+    const category = await this.categoryService.getOneOrThrow(categoryId);
+
+    let imageUrl = existingPost.photo;
+
+    if (file) {
+      const img = await this.cloudinaryService.uploadImage(file.buffer, file.originalname);
+      imageUrl = img.secure_url;
+    }
+
+    const updatedPost = await this.prisma.post.update({
+      where: { id: postId },
+      data: {
+        content,
+        photo: imageUrl,
+        categoryId: category.id,
+        hashTagId: hashtagId,
+      },
     });
 
-    if (!post) {
-      throw new BadRequestException("This is not your post");
-    }
+    return updatedPost;
+  }
+
+  async delete(postId: number, authorId: number) {
+    await this.getOneOrThrow(postId, authorId);
 
     const deletedPost = await this.prisma.post.delete({ where: { id: postId, authorId } });
 
     return deletedPost;
   }
 
-  async getOneOrThrow(postId: number): Promise<Post> {
-    const post = await this.prisma.post.findUnique({ where: { id: postId } });
+  async getOneOrThrow(postId: number, authorId: number): Promise<Post> {
+    const post = await this.prisma.post.findUnique({ where: { id: postId, authorId } });
     if (!post) {
       throw new NotFoundException("Post not found");
     }
+
     return post;
   }
 }
