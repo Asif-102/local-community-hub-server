@@ -72,7 +72,7 @@ model Category {
   publish Boolean @default(false)
 
   authorId Int
-  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User @relation(fields: [authorId], references: [id])
 
   posts Post[]
 }
@@ -84,7 +84,7 @@ model HashTag {
   slug  String @unique
 
   authorId Int
-  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User @relation(fields: [authorId], references: [id])
 
   posts Post[]
 }
@@ -100,10 +100,10 @@ model Post {
   author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   categoryId Int
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id])
 
   hashTagId Int?
-  hashTag   HashTag? @relation(fields: [hashTagId], references: [id], onDelete: Cascade)
+  hashTag   HashTag? @relation(fields: [hashTagId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
