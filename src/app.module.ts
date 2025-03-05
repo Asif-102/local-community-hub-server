@@ -8,8 +8,10 @@ import { AuthModule } from "./auth/auth.module";
 import { CategoryModule } from "./category/category.module";
 import { CloudinaryService } from "./cloudinary.service";
 import { ImageController } from "./image.controller";
+import { PostsModule } from "./posts/posts.module";
 import { TasksModule } from "./tasks/tasks.module";
 import { UsersModule } from "./users/users.module";
+import { HashtagsModule } from './hashtags/hashtags.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { UsersModule } from "./users/users.module";
     UsersModule,
     AuthModule,
     CategoryModule,
+    PostsModule,
+    HashtagsModule,
   ],
   controllers: [AppController, ImageController],
   providers: [AppService, CloudinaryService],
