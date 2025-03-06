@@ -34,7 +34,12 @@ export class AuthController {
   @Post("logout")
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.cookie("refreshToken", "");
+    res.cookie("refreshToken", "", {
+      httpOnly: true,
+      secure: true,
+    });
+
+    return null;
   }
 
   // Google auth
