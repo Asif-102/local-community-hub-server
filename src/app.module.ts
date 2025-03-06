@@ -12,6 +12,8 @@ import { PostsModule } from "./posts/posts.module";
 import { TasksModule } from "./tasks/tasks.module";
 import { UsersModule } from "./users/users.module";
 import { HashtagsModule } from './hashtags/hashtags.module';
+import { LikesModule } from './likes/likes.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { HashtagsModule } from './hashtags/hashtags.module';
     CategoryModule,
     PostsModule,
     HashtagsModule,
+    LikesModule,
+    CommentsModule,
   ],
   controllers: [AppController, ImageController],
   providers: [AppService, CloudinaryService],

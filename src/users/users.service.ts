@@ -7,6 +7,25 @@ import { GetUserDto } from "./dtos/get-user.dto";
 export class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
 
+  async fetchMe(id: number) {
+    const me = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        avatar: true,
+        role: true,
+      },
+    });
+
+    if (!me) {
+      throw new NotFoundException("User with this id is not found");
+    }
+    return me;
+  }
+
   async createOne({ email, firstName, lastName, avatar, hashedPassword }: CreateUserDto) {
     const userByEmail = await this.prismaService.user.findUnique({ where: { email } });
 

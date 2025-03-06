@@ -48,6 +48,8 @@ model User {
   categories Category[]
   posts      Post[]
   hashtags   HashTag[]
+  likes      Like[]
+  comments   Comment[]
 
   role RoleEnum @default(USER)
 
@@ -104,6 +106,37 @@ model Post {
 
   hashTagId Int?
   hashTag   HashTag? @relation(fields: [hashTagId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  likes    Like[]
+  comments Comment[]
+}
+
+model Like {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+
+  content String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  postId Int
+  post   Post @relation(fields: [postId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
