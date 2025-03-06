@@ -34,6 +34,11 @@ export class AuthController {
   @Post("logout")
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
+    res.cookie("accessToken", "", {
+      httpOnly: true,
+      secure: true,
+    });
+
     res.cookie("refreshToken", "", {
       httpOnly: true,
       secure: true,
