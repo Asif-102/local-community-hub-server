@@ -85,8 +85,9 @@ export class CategoryService {
 
     const slug = title
       .toLowerCase()
-      .replace(/ /g, "-")
-      .replace(/[^\w-]+/g, "");
+      .normalize("NFKD") // Use NFKD to split combined characters
+      .replace(/ /g, "-") // Replace spaces with hyphens
+      .replace(/[^\p{L}\p{N}\u0980-\u09FF-]+/gu, ""); // Allow Bangla Unicode range
 
     return slug;
   }
