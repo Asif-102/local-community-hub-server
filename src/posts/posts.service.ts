@@ -42,6 +42,10 @@ export class PostsService {
     return createdPost;
   }
 
+  async getAll() {
+    return await this.prisma.post.findMany();
+  }
+
   async update(
     postId: number,
     { content, categoryId, hashTag }: CreatePostDto,

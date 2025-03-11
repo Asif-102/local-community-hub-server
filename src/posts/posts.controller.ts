@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -37,6 +38,13 @@ export class PostsController {
     @CurrentUser("id", ParseIntPipe) authorId: number,
   ) {
     return this.postsService.create(dto, file, authorId);
+  }
+
+  @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
+  @Get()
+  @HttpCode(HttpStatus.OK)
+  getAll() {
+    return this.postsService.getAll();
   }
 
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
