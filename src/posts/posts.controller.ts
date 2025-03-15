@@ -44,10 +44,11 @@ export class PostsController {
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll(@Query("take") take: number = 1, @Query("skip") skip: number = 1) {
+  getAll(@Query("take") take: number = 1, @Query("skip") skip: number = 1, @Query("search") search?: string) {
     take = take > 20 ? 20 : take;
     skip = skip < 0 ? 0 : skip;
-    return this.postsService.getAll(take, skip);
+    console.log({ search });
+    return this.postsService.getAll(take, skip, search);
   }
 
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)

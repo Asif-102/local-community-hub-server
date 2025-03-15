@@ -42,10 +42,15 @@ export class PostsService {
     return createdPost;
   }
 
-  async getAll(take: number = 10, skip: number = 0) {
+  async getAll(take: number = 10, skip: number = 0, search?: string) {
     return await this.prisma.post.findMany({
       take,
       skip,
+      where: {
+        content: {
+          contains: search,
+        },
+      },
     });
   }
 
