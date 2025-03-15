@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -43,8 +44,10 @@ export class PostsController {
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)
   @Get()
   @HttpCode(HttpStatus.OK)
-  getAll() {
-    return this.postsService.getAll();
+  getAll(@Query("take") take: number = 1, @Query("skip") skip: number = 1) {
+    take = take > 20 ? 20 : take;
+    skip = skip < 0 ? 0 : skip;
+    return this.postsService.getAll(take, skip);
   }
 
   @Roles(Role.USER, Role.ADMIN, Role.SUPER_ADMIN)

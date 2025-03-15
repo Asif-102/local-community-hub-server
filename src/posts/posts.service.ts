@@ -42,8 +42,11 @@ export class PostsService {
     return createdPost;
   }
 
-  async getAll() {
-    return await this.prisma.post.findMany();
+  async getAll(take: number = 10, skip: number = 0) {
+    return await this.prisma.post.findMany({
+      take,
+      skip,
+    });
   }
 
   async update(
